@@ -41,11 +41,11 @@ Module.register("MMM-WienerLinien", {
         Log.info("Starting module: " + this.name);
         moment.locale(config.language);
         setInterval(() => {
-            if(index >= this.config.stations.length){
-                this.index = 0;
-            }
             this.updateDom(300);
             this.index++;
+            if(this.index >= this.config.stations.length){
+                this.index = 0;
+            }
         }, this.config.rotateInterval);
         this.sendSocketNotification("CONFIG", this.config);
     },
@@ -77,8 +77,13 @@ Module.register("MMM-WienerLinien", {
             wrapper.appendChild(text);
         } else {
             var keys = Object.keys(this.stations);
+            if(this.index >= keys.length){
+                this.index = 0;
+            }
             var station = document.createElement("div");
+            station.classList.add("align-left");
             station.innerHTML = this.stations[keys[this.index]].name;
+            wrapper.appendChild(station);
             var table = document.createElement("table");
             table.classList.add("small", "table", "align-left");
 

@@ -72,7 +72,9 @@ module.exports = NodeHelper.create({
 
         for(var i = 0; i < keys.length; i++){
             stations[keys[i]].departures.sort(function(a, b){
-                return a.time- b.time;
+                if(a.time < b.time) return -1;
+                if(a.time > b.time) return 1;
+                return 0;
             });
         }
 

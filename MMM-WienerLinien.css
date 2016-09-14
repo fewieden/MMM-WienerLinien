@@ -5,3 +5,8 @@
 .MMM-WienerLinien .centered {
     text-align: center;
 }
+
+.MMM-WienerLinien .table {
+    border-spacing: 10px 0px;
+    border-collapse: separate;
+}
