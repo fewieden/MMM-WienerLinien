@@ -36,7 +36,7 @@ module.exports = NodeHelper.create({
             if (response.statusCode === 200) {
                 body = JSON.parse(body);
                 if(body.message.value === "OK") {
-                    this.handleData(body.data.monitors);
+                    this.handleData(body.data.monitors, body.message.serverTime);
                 } else {
                     console.log("Error no WienerLinen data");
                 }
@@ -46,7 +46,7 @@ module.exports = NodeHelper.create({
         });
     },
 
-    handleData: function(data){
+    handleData: function(data, time){
         var stations = {};
 
         for(var i = 0; i < data.length; i++){
@@ -57,13 +57,39 @@ module.exports = NodeHelper.create({
                 };
             }
             for(var n = 0; n < data[i].lines.length; n++){
+                var metroFlag = false;
                 for(var x = 0; x < data[i].lines[n].departures.departure.length; x++){
+                    if(Object.keys(data[i].lines[n].departures.departure[x].departureTime).length == 0){
+                        metroFlag = true;
+                        break;
+                    }
+
                     stations[data[i].locationStop.properties.name].departures.push({
                         time: data[i].lines[n].departures.departure[x].departureTime[data[i].lines[n].departures.departure[x].departureTime.hasOwnProperty("timeReal") ? "timeReal" : "timePlanned"],
                         towards: data[i].lines[n].towards,
                         line: data[i].lines[n].name,
                         type: data[i].lines[n].type
                     });
+                }
+                if(metroFlag){
+                    var departureTimePattern = /[0-9]+/g;
+                    var departureTimeMatches = data[i].lines[n].towards.match(pattern).toString().split(",");
+
+                    var towardsPattern = /^[a-zäöüß ]+/i;
+                    var towardsMatch = data[i].lines[n].towards.match(pattern).toString().replace(/  +/g, " ").trim();
+
+                    for(var x = 0; x < departureTimeMatches.length; x++){
+                        var datetime = new Date(time);
+                        datetime.setSeconds(0);
+                        datetime.setMinutes(datetime.getMinutes() + departureTimeMatches[x]);
+
+                        stations[data[i].locationStop.properties.name].departures.push({
+                            time: datetime,
+                            towards: towardsMatch,
+                            line: data[i].lines[n].name,
+                            type: data[i].lines[n].type
+                        });
+                    }
                 }
             }
         }
