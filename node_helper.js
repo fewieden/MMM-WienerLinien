@@ -86,7 +86,7 @@ module.exports = NodeHelper.create({
                     for(var x = 0; x < departureTimeMatches.length; x++){
                         var datetime = new Date(time);
                         datetime.setSeconds(0);
-                        datetime.setMinutes(datetime.getMinutes() + departureTimeMatches[x]);
+                        datetime.setMinutes(datetime.getMinutes() + parseInt(departureTimeMatches[x]));
 
                         stations[data[i].locationStop.properties.name].departures.push({
                             time: datetime,
