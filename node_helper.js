@@ -73,10 +73,10 @@ module.exports = NodeHelper.create({
                 }
                 if(metroFlag){
                     var departureTimePattern = /[0-9]+/g;
-                    var departureTimeMatches = data[i].lines[n].towards.match(pattern).toString().split(",");
+                    var departureTimeMatches = data[i].lines[n].towards.match(departureTimePattern).toString().split(",");
 
                     var towardsPattern = /^[a-zäöüß ]+/i;
-                    var towardsMatch = data[i].lines[n].towards.match(pattern).toString().replace(/  +/g, " ").trim();
+                    var towardsMatch = data[i].lines[n].towards.match(towardsPattern).toString().replace(/  +/g, " ").trim();
 
                     for(var x = 0; x < departureTimeMatches.length; x++){
                         var datetime = new Date(time);
