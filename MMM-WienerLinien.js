@@ -18,6 +18,8 @@ Module.register("MMM-WienerLinien", {
 
     defaults: {
         max: 5,
+        shortenStation: false,
+        shortenDestination: false,
         rotateInterval: 20 * 1000,
         updateInterval: 5 * 60 * 1000
     },
@@ -82,9 +84,13 @@ Module.register("MMM-WienerLinien", {
             if(this.index >= this.maxIndex){
                 this.index = 0;
             }
+            var station_name = this.stations[keys[this.index]].name;
+            if(this.config.shortenStation && station_name.length > this.config.shortenStation){
+                station_name = station_name.slice(0, this.config.shortenStation) + "&#8230;";
+            }
             var station = document.createElement("div");
             station.classList.add("align-left");
-            station.innerHTML = this.stations[keys[this.index]].name;
+            station.innerHTML = station_name;
             wrapper.appendChild(station);
             var table = document.createElement("table");
             table.classList.add("small", "table", "align-left");
@@ -150,8 +156,12 @@ Module.register("MMM-WienerLinien", {
         line.innerHTML = data.line;
         row.appendChild(line);
 
+        var destination_name = data.towards;
+        if(this.config.shortenDestination && destination_name.length > this.config.shortenDestination){
+            destination_name = destination_name.slice(0, this.config.shortenDestination) + "&#8230;";
+        }
         var towards = document.createElement("td");
-        towards.innerHTML = data.towards;
+        towards.innerHTML = destination_name;
         row.appendChild(towards);
 
         var time = document.createElement("td");
