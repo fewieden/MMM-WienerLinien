@@ -11,6 +11,7 @@ const NodeHelper = require("node_helper");
 module.exports = NodeHelper.create({
 
     baseUrl: "https://www.wienerlinien.at/ogd_realtime/monitor?",
+    incidentUrl: "https://www.wienerlinien.at/ogd_realtime/trafficInfoList?", 
 
     start: function() {
         console.log("Starting module: " + this.name);
@@ -44,8 +45,95 @@ module.exports = NodeHelper.create({
                 console.log("Error getting WienerLinen data " + response.statusCode);
             }
         });
+
+	//Elevator info
+	if (this.config.elevatorStations.length > 0) {
+	    var options = {
+		url: this.incidentUrl + "sender=" + this.config.api_key +
+		    "&name=aufzugsinfo" +
+		    "&relatedStop=" + this.config.elevatorStations.join("&relatedStop=")
+	    };
+	    
+	    request(options, (error, response, body) => {
+		if (response.statusCode === 200) {
+		    body = JSON.parse(body);
+		    if(body.data.trafficInfos) {
+			this.handleElevatorData(body.data);
+		    } else {
+			//console.log("Info: no WienerLinen Elevator data");
+		    }
+		} else {
+		    console.log("Error getting WienerLinen Elevator data " + response.statusCode);
+		}
+	    });
+	}
+	    
+	//Incident info
+	if (this.config.incidentLines.length > 0) {
+	    var type = "&name=stoerunglang";
+	    if(this.config.incidentKurz){
+		type = type + "&name=stoerungkurz";
+	    }
+	    
+	    var options = {
+		url: this.incidentUrl + "sender=" + this.config.api_key +
+		    type +
+		    "&relatedLine=" + this.config.incidentLines.join("&relatedLine=")
+	    }
+
+	    request(options, (error, response, body) => {
+		if (response.statusCode === 200) {
+		    body = JSON.parse(body);
+		    if(body.data.trafficInfos) {
+			this.handleIncidentData(body.data);
+		    } else {
+			//console.log("Info: no WienerLinen Incident data");
+		    }
+		} else {
+		    console.log("Error getting WienerLinen Incident data " + response.statusCode);
+		}
+	    });
+	}
     },
 
+    handleElevatorData: function(data){
+	var elevators = [];
+	for(var i = 0; i < data.trafficInfos.length; i++) {
+	    var title = data.trafficInfos[i].title;
+	    var description = data.trafficInfos[i].description;
+	    var text = title + ": " + description;
+	    elevators.push(text);
+	}
+	elevators.sort();
+	
+	this.sendSocketNotification("ELEVATORS", elevators);
+    },
+    
+    handleIncidentData: function(data){
+	var incidents = [];
+
+	for(var i = 0; i < data.trafficInfos.length; i++){
+	    var lines = data.trafficInfos[i].relatedLines.join(", ");
+	    var description = data.trafficInfos[i].title;
+
+	    incidents.push({lines,description});
+	}
+	incidents.sort(function(a, b) {
+	    var nameA = a.lines.toUpperCase(); 
+	    var nameB = b.lines.toUpperCase(); 
+	    if (nameA < nameB) {
+	        return -1;
+	    }
+	    if (nameA > nameB) {
+	        return 1;
+	    }
+
+	    return 0;
+	});
+	
+	this.sendSocketNotification("INCIDENTS", incidents);
+    },
+    
     handleData: function(data, time){
         var stations = {};
 
