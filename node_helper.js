@@ -114,7 +114,7 @@ module.exports = NodeHelper.create({
 
 	for(var i = 0; i < data.trafficInfos.length; i++){
 	    var lines = data.trafficInfos[i].relatedLines.join(", ");
-	    var description = data.trafficInfos[i].title;
+	    var description = data.trafficInfos[i].description;
 
 	    incidents.push({lines,description});
 	}
