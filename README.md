@@ -8,9 +8,9 @@ Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
 
 ## Dependencies
 
-  * An installation of [MagicMirror<sup>2</sup>](https://github.com/MichMich/MagicMirror)
-  * npm
-  * [request](https://www.npmjs.com/package/request)
+* An installation of [MagicMirror<sup>2</sup>](https://github.com/MichMich/MagicMirror)
+* npm
+* [request](https://www.npmjs.com/package/request)
 
 ## Installation
 

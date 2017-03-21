@@ -85,13 +85,10 @@ Module.register('MMM-WienerLinien', {
             if (this.index >= this.maxIndex) {
                 this.index = 0;
             }
-            let stationName = this.stations[keys[this.index]].name;
-            if (this.config.shortenStation && stationName.length > this.config.shortenStation) {
-                stationName = `${stationName.slice(0, this.config.shortenStation)}&#8230;`;
-            }
+
             const station = document.createElement('div');
             station.classList.add('align-left');
-            station.innerHTML = stationName;
+            station.innerHTML = this.shortenText(this.stations[keys[this.index]].name, this.config.shortenStation);
             wrapper.appendChild(station);
             const table = document.createElement('table');
             table.classList.add('small', 'table', 'align-left');
@@ -157,12 +154,8 @@ Module.register('MMM-WienerLinien', {
         line.innerHTML = data.line;
         row.appendChild(line);
 
-        let destinationName = data.towards;
-        if (this.config.shortenDestination && destinationName.length > this.config.shortenDestination) {
-            destinationName = `${destinationName.slice(0, this.config.shortenDestination)}&#8230;`;
-        }
         const towards = document.createElement('td');
-        towards.innerHTML = destinationName;
+        towards.innerHTML = this.shortenText(data.towards, this.config.shortenDestination);
         row.appendChild(towards);
 
         const time = document.createElement('td');
@@ -171,5 +164,13 @@ Module.register('MMM-WienerLinien', {
         row.appendChild(time);
 
         appendTo.appendChild(row);
+    },
+
+    shortenText(text, option) {
+        let temp = text;
+        if (option && temp.length > option) {
+            temp = `${temp.slice(0, option)}&#8230;`;
+        }
+        return temp;
     }
 });
