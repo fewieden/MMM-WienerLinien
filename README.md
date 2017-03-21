@@ -1,4 +1,5 @@
-# MMM-WienerLinien
+# MMM-WienerLinien  [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/fewieden/MMM-WienerLinien/master/LICENSE) [![Build Status](https://travis-ci.org/fewieden/MMM-WienerLinien.svg?branch=master)](https://travis-ci.org/fewieden/MMM-WienerLinien) [![Code Climate](https://codeclimate.com/github/fewieden/MMM-WienerLinien/badges/gpa.svg?style=flat)](https://codeclimate.com/github/fewieden/MMM-WienerLinien) [![Known Vulnerabilities](https://snyk.io/test/github/fewieden/mmm-wienerlinien/badge.svg)](https://snyk.io/test/github/fewieden/mmm-wienerlinien)
+
 Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
 
 ## Example
@@ -6,13 +7,15 @@ Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
 ![](.github/example.jpg) ![](.github/example2.jpg)
 
 ## Dependencies
+
   * An installation of [MagicMirror<sup>2</sup>](https://github.com/MichMich/MagicMirror)
   * npm
   * [request](https://www.npmjs.com/package/request)
 
 ## Installation
- 1. Clone this repo into `~/MagicMirror/modules` directory.
- 2. Configure your `~/MagicMirror/config/config.js`:
+
+1. Clone this repo into `~/MagicMirror/modules` directory.
+1. Configure your `~/MagicMirror/config/config.js`:
 
     ```
     {
@@ -25,9 +28,11 @@ Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
         }
     }
     ```
- 3. Run command `npm install` in `~/MagicMirror/modules/MMM-WienerLinien` directory.
+
+1. Run command `npm install --productive` in `~/MagicMirror/modules/MMM-WienerLinien` directory.
 
 ## Config Options
+
 | **Option** | **Default** | **Description** |
 | --- | --- | --- |
 | `api_key` | REQUIRED | Get an API key for free access to the data of www.wienerlinien.at [here](https://www.wien.gv.at/formularserver2/user/formular.aspx?pid=3b49a23de1ff43efbc45ae85faee31db&pn=B0718725a79fb40f4bb4b7e0d2d49f1d1). |
