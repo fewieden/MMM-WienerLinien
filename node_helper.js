@@ -5,20 +5,22 @@
  * MIT Licensed.
  */
 
-const request = require("request");
-const NodeHelper = require("node_helper");
+/* eslint-env node */
+
+const request = require('request');
+const NodeHelper = require('node_helper');
 
 module.exports = NodeHelper.create({
 
-    baseUrl: "https://www.wienerlinien.at/ogd_realtime/monitor?",
-    incidentUrl: "https://www.wienerlinien.at/ogd_realtime/trafficInfoList?", 
+    baseUrl: "https://www.wienerlinien.at/ogd_realtime/",
+    incidentUrl: "https://www.wienerlinien.at/ogd_realtime/trafficInfoList?",
 
-    start: function() {
-        console.log("Starting module: " + this.name);
+    start() {
+        console.log(`Starting module helper: ${this.name}`);
     },
 
-    socketNotificationReceived: function(notification, payload) {
-        if(notification === "CONFIG"){
+    socketNotificationReceived(notification, payload) {
+        if (notification === 'CONFIG') {
             this.config = payload;
             this.getData();
             setInterval(() => {
@@ -27,147 +29,133 @@ module.exports = NodeHelper.create({
         }
     },
 
-    getData: function() {
-        var options = {
-            url: this.baseUrl +
-            "sender=" + this.config.api_key +
-            "&rbl=" + this.config.stations.join("&rbl=")
+    getData() {
+        const options = {
+            url: `${this.baseUrl}monitor?sender=${this.config.api_key}&rbl=${this.config.stations.join('&rbl=')}`
         };
         request(options, (error, response, body) => {
             if (response.statusCode === 200) {
-                body = JSON.parse(body);
-                if(body.message.value === "OK") {
-                    this.handleData(body.data.monitors, body.message.serverTime);
+                const parsedBody = JSON.parse(body);
+                if (parsedBody.message.value === 'OK') {
+                    this.handleData(parsedBody.data.monitors, parsedBody.message.serverTime);
                 } else {
-                    console.log("Error no WienerLinen data");
+                    console.log('Error no WienerLinen data');
                 }
             } else {
-                console.log("Error getting WienerLinen data " + response.statusCode);
+                console.log(`Error getting WienerLinen data ${response.statusCode}`);
             }
         });
 
-	//Elevator info
-	if (this.config.elevatorStations.length > 0) {
-	    var options = {
-		url: this.incidentUrl + "sender=" + this.config.api_key +
-		    "&name=aufzugsinfo" +
-		    "&relatedStop=" + this.config.elevatorStations.join("&relatedStop=")
-	    };
-	    
-	    request(options, (error, response, body) => {
-		if (response.statusCode === 200) {
-		    body = JSON.parse(body);
-		    if(body.data.trafficInfos) {
-			this.handleElevatorData(body.data);
-		    } else {
-			//console.log("Info: no WienerLinen Elevator data");
-		    }
-		} else {
-		    console.log("Error getting WienerLinen Elevator data " + response.statusCode);
-		}
-	    });
-	}
-	    
-	//Incident info
-	if (this.config.incidentLines.length > 0) {
-	    var type = "&name=stoerunglang";
-	    if(this.config.incidentKurz){
-		type = type + "&name=stoerungkurz";
-	    }
-	    
-	    var options = {
-		url: this.incidentUrl + "sender=" + this.config.api_key +
-		    type +
-		    "&relatedLine=" + this.config.incidentLines.join("&relatedLine=")
-	    }
+        //Elevator info
+        if (this.config.elevatorStations.length > 0) {
+            options.url = `${this.baseUrl}trafficInfoList?sender=${this.config.api_key}&name=aufzugsinfo&relatedStop=${this.config.elevatorStations.join("&relatedStop=")}`;
 
-	    request(options, (error, response, body) => {
-		if (response.statusCode === 200) {
-		    body = JSON.parse(body);
-		    if(body.data.trafficInfos) {
-			this.handleIncidentData(body.data);
-		    } else {
-			//console.log("Info: no WienerLinen Incident data");
-		    }
-		} else {
-		    console.log("Error getting WienerLinen Incident data " + response.statusCode);
-		}
-	    });
-	}
+            request(options, (error, response, body) => {
+                if (response.statusCode === 200) {
+                    body = JSON.parse(body);
+                    if(body.data.trafficInfos) {
+                        this.handleElevatorData(body.data);
+                    } else {
+                        //console.log("Info: no WienerLinen Elevator data");
+                    }
+                } else {
+                    console.log(`Error getting WienerLinen Elevator data ${response.statusCode}`);
+                }
+            });
+        }
+
+        //Incident info
+        if (this.config.incidentLines.length > 0) {
+            let type = '&name=stoerunglang';
+            if (this.config.incidentShort) {
+                type = type + '&name=stoerungkurz';
+            }
+
+            options.url = `${this.baseUrl}trafficInfoList?sender=${this.config.api_key}${type}&relatedLine=${this.config.incidentLines.join('&relatedLine=')}`;
+
+            request(options, (error, response, body) => {
+                if (response.statusCode === 200) {
+                    body = JSON.parse(body);
+                    if(body.data.trafficInfos) {
+                        this.handleIncidentData(body.data);
+                    } else {
+                        //console.log("Info: no WienerLinen Incident data");
+                    }
+                } else {
+                    console.log("Error getting WienerLinen Incident data " + response.statusCode);
+                }
+            });
+        }
     },
 
-    handleElevatorData: function(data){
-	var elevators = [];
-	for(var i = 0; i < data.trafficInfos.length; i++) {
-	    var title = data.trafficInfos[i].title;
-	    var description = data.trafficInfos[i].description;
-	    var text = title + ": " + description;
-	    elevators.push(text);
-	}
-	elevators.sort();
-	
-	this.sendSocketNotification("ELEVATORS", elevators);
+    handleElevatorData(data) {
+        const elevators = [];
+        for (let i = 0; i < data.trafficInfos.length; i += 1) {
+            elevators.push(`${data.trafficInfos[i].title}: ${data.trafficInfos[i].description}`);
+        }
+        elevators.sort();
+
+        this.sendSocketNotification("ELEVATORS", elevators);
     },
-    
-    handleIncidentData: function(data){
-	var incidents = [];
 
-	for(var i = 0; i < data.trafficInfos.length; i++){
-	    var lines = data.trafficInfos[i].relatedLines.join(", ");
-	    var description = data.trafficInfos[i].description;
+    handleIncidentData(data) {
+        const incidents = [];
+        for (let i = 0; i < data.trafficInfos.length; i++) {
+            const lines = data.trafficInfos[i].relatedLines.join(", ");
+            const description = data.trafficInfos[i].description;
+            incidents.push({ lines, description });
+        }
+        incidents.sort((a, b) => {
+            const nameA = a.lines.toUpperCase(); 
+            const nameB = b.lines.toUpperCase(); 
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+            return 0;
+        });
 
-	    incidents.push({lines,description});
-	}
-	incidents.sort(function(a, b) {
-	    var nameA = a.lines.toUpperCase(); 
-	    var nameB = b.lines.toUpperCase(); 
-	    if (nameA < nameB) {
-	        return -1;
-	    }
-	    if (nameA > nameB) {
-	        return 1;
-	    }
-
-	    return 0;
-	});
-	
-	this.sendSocketNotification("INCIDENTS", incidents);
+        this.sendSocketNotification("INCIDENTS", incidents);
     },
-    
-    handleData: function(data, time){
-        var stations = {};
 
-        for(var i = 0; i < data.length; i++){
-            if(!stations.hasOwnProperty(data[i].locationStop.properties.name)){
+    handleData(data, time) {
+        const stations = {};
+
+        for (let i = 0; i < data.length; i += 1) {
+            if (!Object.prototype.hasOwnProperty.call(stations, data[i].locationStop.properties.name)) {
                 stations[data[i].locationStop.properties.name] = {
                     name: data[i].locationStop.properties.title,
                     departures: []
                 };
             }
-            for(var n = 0; n < data[i].lines.length; n++){
-                var metroFlag = false;
-                for(var x = 0; x < data[i].lines[n].departures.departure.length; x++){
-                    if(Object.keys(data[i].lines[n].departures.departure[x].departureTime).length == 0){
+            for (let n = 0; n < data[i].lines.length; n += 1) {
+                let metroFlag = false;
+                for (let x = 0; x < data[i].lines[n].departures.departure.length; x += 1) {
+                    if (Object.keys(data[i].lines[n].departures.departure[x].departureTime).length === 0) {
                         metroFlag = true;
                         break;
                     }
 
+                    const departureTime = data[i].lines[n].departures.departure[x].departureTime;
+
                     stations[data[i].locationStop.properties.name].departures.push({
-                        time: data[i].lines[n].departures.departure[x].departureTime[data[i].lines[n].departures.departure[x].departureTime.hasOwnProperty("timeReal") ? "timeReal" : "timePlanned"],
+                        time: departureTime[Object.prototype.hasOwnProperty.call(departureTime, 'timeReal') ? 'timeReal' : 'timePlanned'],
                         towards: data[i].lines[n].towards,
                         line: data[i].lines[n].name,
                         type: data[i].lines[n].type
                     });
                 }
-                if(metroFlag){
-                    var departureTimePattern = /[0-9]+/g;
-                    var departureTimeMatches = data[i].lines[n].towards.match(pattern).toString().split(",");
+                if (metroFlag) {
+                    const departureTimePattern = /[0-9]+/g;
+                    const departureTimeMatches = data[i].lines[n].towards.match(departureTimePattern).toString().split(',');
 
-                    var towardsPattern = /^[a-zäöüß ]+/i;
-                    var towardsMatch = data[i].lines[n].towards.match(pattern).toString().replace(/  +/g, " ").trim();
+                    const towardsPattern = /^[a-zäöüß ]+/i;
+                    const towardsMatch = data[i].lines[n].towards.match(towardsPattern).toString().replace(/ {2,}/g, ' ').trim();
 
-                    for(var x = 0; x < departureTimeMatches.length; x++){
-                        var datetime = new Date(time);
+                    for (let x = 0; x < departureTimeMatches.length; x += 1) {
+                        const datetime = new Date(time);
                         datetime.setSeconds(0);
                         datetime.setMinutes(datetime.getMinutes() + departureTimeMatches[x]);
 
@@ -182,16 +170,19 @@ module.exports = NodeHelper.create({
             }
         }
 
-        var keys = Object.keys(stations);
+        const keys = Object.keys(stations);
 
-        for(var i = 0; i < keys.length; i++){
-            stations[keys[i]].departures.sort(function(a, b){
-                if(a.time < b.time) return -1;
-                if(a.time > b.time) return 1;
+        for (let i = 0; i < keys.length; i += 1) {
+            stations[keys[i]].departures.sort((a, b) => {
+                if (a.time < b.time) {
+                    return -1;
+                } else if (a.time > b.time) {
+                    return 1;
+                }
                 return 0;
             });
         }
 
-        this.sendSocketNotification("STATIONS", stations);
+        this.sendSocketNotification('STATIONS', stations);
     }
 });
