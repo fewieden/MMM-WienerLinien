@@ -12,7 +12,7 @@ const NodeHelper = require('node_helper');
 
 module.exports = NodeHelper.create({
 
-    baseUrl: "https://www.wienerlinien.at/ogd_realtime/",
+    baseUrl: 'https://www.wienerlinien.at/ogd_realtime/',
 
     start() {
         console.log(`Starting module helper: ${this.name}`);
@@ -45,17 +45,17 @@ module.exports = NodeHelper.create({
             }
         });
 
-        //Elevator info
+        // Get elevator info
         if (this.config.elevatorStations.length > 0) {
-            options.url = `${this.baseUrl}trafficInfoList?sender=${this.config.api_key}&name=aufzugsinfo&relatedStop=${this.config.elevatorStations.join("&relatedStop=")}`;
+            options.url = `${this.baseUrl}trafficInfoList?sender=${this.config.api_key}&name=aufzugsinfo&relatedStop=${this.config.elevatorStations.join('&relatedStop=')}`;
 
             request(options, (error, response, body) => {
                 if (response.statusCode === 200) {
-                    body = JSON.parse(body);
-                    if(body.data.trafficInfos) {
-                        this.handleElevatorData(body.data);
+                    const parsedBody = JSON.parse(body);
+                    if (parsedBody.data.trafficInfos) {
+                        this.handleElevatorData(parsedBody.data);
                     } else {
-                        //console.log("Info: no WienerLinen Elevator data");
+                        // console.log('Info: no WienerLinen Elevator data');
                     }
                 } else {
                     console.log(`Error getting WienerLinen Elevator data ${response.statusCode}`);
@@ -63,25 +63,25 @@ module.exports = NodeHelper.create({
             });
         }
 
-        //Incident info
+        // Get incident info
         if (this.config.incidentLines.length > 0) {
             let type = '&name=stoerunglang';
             if (this.config.incidentShort) {
-                type = type + '&name=stoerungkurz';
+                type += '&name=stoerungkurz';
             }
 
             options.url = `${this.baseUrl}trafficInfoList?sender=${this.config.api_key}${type}&relatedLine=${this.config.incidentLines.join('&relatedLine=')}`;
 
             request(options, (error, response, body) => {
                 if (response.statusCode === 200) {
-                    body = JSON.parse(body);
-                    if(body.data.trafficInfos) {
-                        this.handleIncidentData(body.data);
+                    const parsedBody = JSON.parse(body);
+                    if (parsedBody.data.trafficInfos) {
+                        this.handleIncidentData(parsedBody.data);
                     } else {
-                        //console.log("Info: no WienerLinen Incident data");
+                        // console.log('Info: no WienerLinen Incident data');
                     }
                 } else {
-                    console.log("Error getting WienerLinen Incident data " + response.statusCode);
+                    console.log(`Error getting WienerLinen Incident data ${response.statusCode}`);
                 }
             });
         }
@@ -94,19 +94,19 @@ module.exports = NodeHelper.create({
         }
         elevators.sort();
 
-        this.sendSocketNotification("ELEVATORS", elevators);
+        this.sendSocketNotification('ELEVATORS', elevators);
     },
 
     handleIncidentData(data) {
         const incidents = [];
-        for (let i = 0; i < data.trafficInfos.length; i++) {
-            const lines = data.trafficInfos[i].relatedLines.join(", ");
+        for (let i = 0; i < data.trafficInfos.length; i += 1) {
+            const lines = data.trafficInfos[i].relatedLines.join(', ');
             const description = data.trafficInfos[i].description;
             incidents.push({ lines, description });
         }
         incidents.sort((a, b) => {
-            const nameA = a.lines.toUpperCase(); 
-            const nameB = b.lines.toUpperCase(); 
+            const nameA = a.lines.toUpperCase();
+            const nameB = b.lines.toUpperCase();
             if (nameA < nameB) {
                 return -1;
             }
@@ -116,7 +116,7 @@ module.exports = NodeHelper.create({
             return 0;
         });
 
-        this.sendSocketNotification("INCIDENTS", incidents);
+        this.sendSocketNotification('INCIDENTS', incidents);
     },
 
     handleData(data, time) {

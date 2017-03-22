@@ -61,9 +61,9 @@ Module.register('MMM-WienerLinien', {
     socketNotificationReceived(notification, payload) {
         if (notification === 'STATIONS') {
             this.stations = payload;
-        } else if (notification === "ELEVATORS") {
+        } else if (notification === 'ELEVATORS') {
             this.elevators = payload;
-        } else if (notification === "INCIDENTS") {
+        } else if (notification === 'INCIDENTS') {
             this.incidents = payload;
         }
         this.updateDom(300);
@@ -109,38 +109,38 @@ Module.register('MMM-WienerLinien', {
             wrapper.appendChild(table);
         }
 
-        //create section for line and elevators disruptions
-        const incidentSection = document.createElement("div");
-        const incidentTitle = document.createElement("div");
+        // Create section for line and elevators disruptions
+        const incidentSection = document.createElement('div');
+        const incidentTitle = document.createElement('div');
 
         if (this.config.elevatorStations.length > 0 || this.config.incidentLines.length > 0) {
-            incidentTitle.classList.add("align-left","small");
-            incidentTitle.style.borderTop = "1px solid #666;"
-            incidentTitle.innerHTML = "<br>Disruptions"; //TODO: Translation
-            incidentSection.appendChild(incidentTitle);	    
+            incidentTitle.classList.add('align-left', 'small');
+            incidentTitle.style.borderTop = '1px solid #666;';
+            incidentTitle.innerHTML = '<br>Disruptions'; // TODO: Translation
+            incidentSection.appendChild(incidentTitle);
 
             wrapper.appendChild(incidentSection);
         }
 
         if ((this.incidents && this.incidents.length > 0) || (this.elevators && this.elevators.length > 0)) {
-            const incidentList = document.createElement("table");
-            incidentList.classList.add("align-left", "table", "xsmall");
+            const incidentList = document.createElement('table');
+            incidentList.classList.add('align-left', 'table', 'xsmall');
             incidentSection.appendChild(incidentList);
 
-            //elevator disruption info
+            // Elevator disruption info
             if (this.elevators && this.elevators.length > 0) {
                 for (let i = 0; i < this.elevators.length; i += 1) {
-                    const row = document.createElement("tr");
+                    const row = document.createElement('tr');
 
-                    const type = document.createElement("td");
-                    type.classList.add("centered");
-                    const typeIcon = document.createElement("i");
-                    typeIcon.classList.add("fa", "fa-wheelchair");
-                    type.appendChild(typeIcon)
-                    row.appendChild(type)
+                    const type = document.createElement('td');
+                    type.classList.add('centered');
+                    const typeIcon = document.createElement('i');
+                    typeIcon.classList.add('fa', 'fa-wheelchair');
+                    type.appendChild(typeIcon);
+                    row.appendChild(type);
 
-                    const description = document.createElement("td");
-                    description.classList.add("align-left");
+                    const description = document.createElement('td');
+                    description.classList.add('align-left');
                     description.innerHTML = this.elevators[i];
                     row.append(description);
 
@@ -148,18 +148,18 @@ Module.register('MMM-WienerLinien', {
                 }
             }
 
-            //line incident info
+            // Line incident info
             if (this.incidents && this.incidents.length > 0) {
                 for (let i = 0; i < this.incidents.length; i += 1) {
-                    const row = document.createElement("tr");
+                    const row = document.createElement('tr');
 
-                    const type = document.createElement("td");
-                    type.classList.add("centered");
+                    const type = document.createElement('td');
+                    type.classList.add('centered');
                     type.innerHTML = this.incidents[i].lines;
-                    row.appendChild(type)
+                    row.appendChild(type);
 
-                    const description = document.createElement("td");
-                    description.classList.add("align-left");
+                    const description = document.createElement('td');
+                    description.classList.add('align-left');
                     description.innerHTML = this.incidents[i].description;
                     row.append(description);
 
@@ -167,7 +167,7 @@ Module.register('MMM-WienerLinien', {
                 }
             }
         } else {
-            incidentTitle.innerHTML = "<br>No disruptions known"; //TODO: Translation
+            incidentTitle.innerHTML = '<br>No disruptions known'; // TODO: Translation
         }
 
         return wrapper;
@@ -226,8 +226,8 @@ Module.register('MMM-WienerLinien', {
         towards.innerHTML = this.shortenText(data.towards, this.config.shortenDestination);
         row.appendChild(towards);
 
-        const time = document.createElement("td");
-        time.classList.add("align-left");
+        const time = document.createElement('td');
+        time.classList.add('align-left');
         time.innerHTML = moment().to(data.time);
         row.appendChild(time);
 
