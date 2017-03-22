@@ -13,7 +13,6 @@ const NodeHelper = require('node_helper');
 module.exports = NodeHelper.create({
 
     baseUrl: "https://www.wienerlinien.at/ogd_realtime/",
-    incidentUrl: "https://www.wienerlinien.at/ogd_realtime/trafficInfoList?",
 
     start() {
         console.log(`Starting module helper: ${this.name}`);
