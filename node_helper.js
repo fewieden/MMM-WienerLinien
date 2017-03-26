@@ -12,7 +12,7 @@ const NodeHelper = require('node_helper');
 
 module.exports = NodeHelper.create({
 
-    baseUrl: 'https://www.wienerlinien.at/ogd_realtime/monitor',
+    baseUrl: 'https://www.wienerlinien.at/ogd_realtime/',
 
     start() {
         console.log(`Starting module helper: ${this.name}`);
@@ -30,8 +30,9 @@ module.exports = NodeHelper.create({
 
     getData() {
         const options = {
-            url: `${this.baseUrl}?sender=${this.config.api_key}&rbl=${this.config.stations.join('&rbl=')}`
+            url: `${this.baseUrl}monitor?sender=${this.config.api_key}&rbl=${this.config.stations.join('&rbl=')}`
         };
+
         request(options, (error, response, body) => {
             if (response.statusCode === 200) {
                 const parsedBody = JSON.parse(body);
@@ -44,6 +45,71 @@ module.exports = NodeHelper.create({
                 console.log(`Error getting WienerLinen data ${response.statusCode}`);
             }
         });
+
+        // Get elevator info
+        if (this.config.elevatorStations.length > 0) {
+            options.url = `${this.baseUrl}trafficInfoList?sender=${this.config.api_key}&name=aufzugsinfo&relatedStop=${this.config.elevatorStations.join('&relatedStop=')}`;
+
+            this.getAdditionalData(options, 'Elevator');
+        }
+
+        // Get incident info
+        if (this.config.incidentLines.length > 0) {
+            let type = '&name=stoerunglang';
+            if (this.config.incidentShort) {
+                type += '&name=stoerungkurz';
+            }
+
+            options.url = `${this.baseUrl}trafficInfoList?sender=${this.config.api_key}${type}&relatedLine=${this.config.incidentLines.join('&relatedLine=')}`;
+
+            this.getAdditionalData(options, 'Incident');
+        }
+    },
+
+    getAdditionalData(options, type) {
+        request(options, (error, response, body) => {
+            if (response.statusCode === 200) {
+                const parsedBody = JSON.parse(body);
+                if (Object.prototype.hasOwnProperty.call(parsedBody.data, 'trafficInfos')) {
+                    this[`handle${type}Data`](parsedBody.data.trafficInfos);
+                } else {
+                    console.log(`Info: no WienerLinen ${type} data available.`);
+                }
+            } else {
+                console.log(`Error getting WienerLinen ${type} data ${response.statusCode}`);
+            }
+        });
+    },
+
+    handleElevatorData(data) {
+        const elevators = [];
+        for (let i = 0; i < data.length; i += 1) {
+            elevators.push(`${data[i].title}: ${data[i].description}`);
+        }
+        elevators.sort();
+
+        this.sendSocketNotification('ELEVATORS', elevators);
+    },
+
+    handleIncidentData(data) {
+        const incidents = [];
+        for (let i = 0; i < data.length; i += 1) {
+            const lines = data[i].relatedLines.join(', ');
+            const description = data[i].description;
+            incidents.push({ lines, description });
+        }
+        incidents.sort((a, b) => {
+            const nameA = a.lines.toUpperCase();
+            const nameB = b.lines.toUpperCase();
+            if (nameA < nameB) {
+                return -1;
+            } else if (nameA > nameB) {
+                return 1;
+            }
+            return 0;
+        });
+
+        this.sendSocketNotification('INCIDENTS', incidents);
     },
 
     handleData(data, time) {

@@ -10,3 +10,9 @@
     border-spacing: 10px 0;
     border-collapse: separate;
 }
+
+.MMM-WienerLinien .incidents {
+    margin-top: 10px;
+    border-top: 1px solid #666;
+    padding-top: 5px;
+}

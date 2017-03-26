@@ -1,3 +1,5 @@
 {
-  "LOADING": "Loading..."
+  "LOADING": "Loading...",
+  "INCIDENTS": "Incidents",
+  "NO_INCIDENTS": "No incidents known."
 }

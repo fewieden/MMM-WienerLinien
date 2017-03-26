@@ -23,7 +23,10 @@ Module.register('MMM-WienerLinien', {
         shortenStation: false,
         shortenDestination: false,
         rotateInterval: 20 * 1000,
-        updateInterval: 5 * 60 * 1000
+        updateInterval: 5 * 60 * 1000,
+        elevatorStations: [],
+        incidentLines: [],
+        incidentShort: false
     },
 
     getTranslations() {
@@ -58,8 +61,12 @@ Module.register('MMM-WienerLinien', {
     socketNotificationReceived(notification, payload) {
         if (notification === 'STATIONS') {
             this.stations = payload;
-            this.updateDom(300);
+        } else if (notification === 'ELEVATORS') {
+            this.elevators = payload;
+        } else if (notification === 'INCIDENTS') {
+            this.incidents = payload;
         }
+        this.updateDom(300);
     },
 
     getDom() {
@@ -101,6 +108,33 @@ Module.register('MMM-WienerLinien', {
 
             wrapper.appendChild(table);
         }
+
+        // Create section for line and elevator incidents
+        const incidentSection = document.createElement('div');
+        const incidentTitle = document.createElement('div');
+        incidentTitle.classList.add('align-left', 'small', 'incidents');
+        const incidentList = document.createElement('table');
+        incidentList.classList.add('align-left', 'table', 'xsmall');
+
+        if ((this.incidents && this.incidents.length > 0) || (this.elevators && this.elevators.length > 0)) {
+            incidentTitle.innerHTML = this.translate('INCIDENTS');
+            // Elevator disruption info
+            if (this.elevators && this.elevators.length > 0) {
+                this.appendIncidentData(incidentList, 'elevators');
+            }
+
+            // Line incident info
+            if (this.incidents && this.incidents.length > 0) {
+                this.appendIncidentData(incidentList, 'incidents');
+            }
+            incidentSection.appendChild(incidentList);
+        } else {
+            incidentTitle.innerHTML = this.translate('NO_INCIDENTS');
+        }
+
+        incidentSection.appendChild(incidentTitle);
+        incidentSection.appendChild(incidentList);
+        wrapper.appendChild(incidentSection);
 
         return wrapper;
     },
@@ -159,11 +193,39 @@ Module.register('MMM-WienerLinien', {
         row.appendChild(towards);
 
         const time = document.createElement('td');
-        time.classList.add('centered');
+        time.classList.add('align-left');
         time.innerHTML = moment().to(data.time);
         row.appendChild(time);
 
         appendTo.appendChild(row);
+    },
+
+    appendIncidentData(appendTo, type) {
+        for (let i = 0; i < this[type].length; i += 1) {
+            const row = document.createElement('tr');
+
+            const typeColumn = document.createElement('td');
+            typeColumn.classList.add('centered');
+            if (type === 'elevators') {
+                const typeIcon = document.createElement('i');
+                typeIcon.classList.add('fa', 'fa-wheelchair');
+                typeColumn.appendChild(typeIcon);
+            } else {
+                typeColumn.innerHTML = this[type][i].lines;
+            }
+            row.appendChild(typeColumn);
+
+            const description = document.createElement('td');
+            description.classList.add('align-left');
+            if (type === 'elevators') {
+                description.innerHTML = this[type][i];
+            } else {
+                description.innerHTML = this[type][i].description;
+            }
+            row.appendChild(description);
+
+            appendTo.appendChild(row);
+        }
     },
 
     shortenText(text, option) {
