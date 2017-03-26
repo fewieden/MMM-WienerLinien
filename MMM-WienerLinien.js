@@ -109,66 +109,32 @@ Module.register('MMM-WienerLinien', {
             wrapper.appendChild(table);
         }
 
-        // Create section for line and elevators disruptions
+        // Create section for line and elevator incidents
         const incidentSection = document.createElement('div');
         const incidentTitle = document.createElement('div');
-
-        if (this.config.elevatorStations.length > 0 || this.config.incidentLines.length > 0) {
-            incidentTitle.classList.add('align-left', 'small');
-            incidentTitle.style.borderTop = '1px solid #666;';
-            incidentTitle.innerHTML = '<br>Disruptions'; // TODO: Translation
-            incidentSection.appendChild(incidentTitle);
-
-            wrapper.appendChild(incidentSection);
-        }
+        incidentTitle.classList.add('align-left', 'small', 'incidents');
+        const incidentList = document.createElement('table');
+        incidentList.classList.add('align-left', 'table', 'xsmall');
 
         if ((this.incidents && this.incidents.length > 0) || (this.elevators && this.elevators.length > 0)) {
-            const incidentList = document.createElement('table');
-            incidentList.classList.add('align-left', 'table', 'xsmall');
-            incidentSection.appendChild(incidentList);
-
+            incidentTitle.innerHTML = this.translate('INCIDENTS');
             // Elevator disruption info
             if (this.elevators && this.elevators.length > 0) {
-                for (let i = 0; i < this.elevators.length; i += 1) {
-                    const row = document.createElement('tr');
-
-                    const type = document.createElement('td');
-                    type.classList.add('centered');
-                    const typeIcon = document.createElement('i');
-                    typeIcon.classList.add('fa', 'fa-wheelchair');
-                    type.appendChild(typeIcon);
-                    row.appendChild(type);
-
-                    const description = document.createElement('td');
-                    description.classList.add('align-left');
-                    description.innerHTML = this.elevators[i];
-                    row.append(description);
-
-                    incidentList.append(row);
-                }
+                this.appendIncidentData(incidentList, 'elevators');
             }
 
             // Line incident info
             if (this.incidents && this.incidents.length > 0) {
-                for (let i = 0; i < this.incidents.length; i += 1) {
-                    const row = document.createElement('tr');
-
-                    const type = document.createElement('td');
-                    type.classList.add('centered');
-                    type.innerHTML = this.incidents[i].lines;
-                    row.appendChild(type);
-
-                    const description = document.createElement('td');
-                    description.classList.add('align-left');
-                    description.innerHTML = this.incidents[i].description;
-                    row.append(description);
-
-                    incidentList.append(row);
-                }
+                this.appendIncidentData(incidentList, 'incidents');
             }
+            incidentSection.appendChild(incidentList);
         } else {
-            incidentTitle.innerHTML = '<br>No disruptions known'; // TODO: Translation
+            incidentTitle.innerHTML = this.translate('NO_INCIDENTS');
         }
+
+        incidentSection.appendChild(incidentTitle);
+        incidentSection.appendChild(incidentList);
+        wrapper.appendChild(incidentSection);
 
         return wrapper;
     },
@@ -232,6 +198,34 @@ Module.register('MMM-WienerLinien', {
         row.appendChild(time);
 
         appendTo.appendChild(row);
+    },
+
+    appendIncidentData(appendTo, type) {
+        for (let i = 0; i < this[type].length; i += 1) {
+            const row = document.createElement('tr');
+
+            const typeColumn = document.createElement('td');
+            typeColumn.classList.add('centered');
+            if (type === 'elevators') {
+                const typeIcon = document.createElement('i');
+                typeIcon.classList.add('fa', 'fa-wheelchair');
+                typeColumn.appendChild(typeIcon);
+            } else {
+                typeColumn.innerHTML = this[type][i].lines;
+            }
+            row.appendChild(typeColumn);
+
+            const description = document.createElement('td');
+            description.classList.add('align-left');
+            if (type === 'elevators') {
+                description.innerHTML = this[type][i];
+            } else {
+                description.innerHTML = this[type][i].description;
+            }
+            row.appendChild(description);
+
+            appendTo.appendChild(row);
+        }
     },
 
     shortenText(text, option) {

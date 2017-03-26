@@ -4,7 +4,7 @@ Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
 
 ## Example
 
-![](.github/example.jpg) ![](.github/example2.jpg)
+![](.github/example.jpg) ![](.github/example2.jpg) ![](.github/example3.PNG)
 
 ## Dependencies
 
@@ -44,5 +44,5 @@ Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
 | `updateInterval` | `300000` (5 mins) | How often should the data be fetched. |
 | `elevatorStations` | EMPTY  | Insert the station ids where you would like to know elevator disruptions |
 | `incidentLines` | EMPTY  | Insert the line names for which you would like to know disruptions |
-| `incidentShort` | `false` | If true, also the changes to lines are displayed (AZBLinienspezialtext [see documentation](http://data.wien.gv.at/pdf/wienerlinien-echtzeitdaten-dokumentation.pdf)), otherwise only current disruptions |
+| `incidentShort` | `false` | If true, also the changes to lines are displayed (AZBLinienspezialtext [see documentation](https://data.wien.gv.at/pdf/wienerlinien-echtzeitdaten-dokumentation.pdf)), otherwise only current disruptions |
 

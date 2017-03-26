@@ -32,6 +32,7 @@ module.exports = NodeHelper.create({
         const options = {
             url: `${this.baseUrl}monitor?sender=${this.config.api_key}&rbl=${this.config.stations.join('&rbl=')}`
         };
+
         request(options, (error, response, body) => {
             if (response.statusCode === 200) {
                 const parsedBody = JSON.parse(body);
@@ -49,18 +50,7 @@ module.exports = NodeHelper.create({
         if (this.config.elevatorStations.length > 0) {
             options.url = `${this.baseUrl}trafficInfoList?sender=${this.config.api_key}&name=aufzugsinfo&relatedStop=${this.config.elevatorStations.join('&relatedStop=')}`;
 
-            request(options, (error, response, body) => {
-                if (response.statusCode === 200) {
-                    const parsedBody = JSON.parse(body);
-                    if (parsedBody.data.trafficInfos) {
-                        this.handleElevatorData(parsedBody.data);
-                    } else {
-                        // console.log('Info: no WienerLinen Elevator data');
-                    }
-                } else {
-                    console.log(`Error getting WienerLinen Elevator data ${response.statusCode}`);
-                }
-            });
+            this.getAdditionalData(options, 'Elevator');
         }
 
         // Get incident info
@@ -72,25 +62,29 @@ module.exports = NodeHelper.create({
 
             options.url = `${this.baseUrl}trafficInfoList?sender=${this.config.api_key}${type}&relatedLine=${this.config.incidentLines.join('&relatedLine=')}`;
 
-            request(options, (error, response, body) => {
-                if (response.statusCode === 200) {
-                    const parsedBody = JSON.parse(body);
-                    if (parsedBody.data.trafficInfos) {
-                        this.handleIncidentData(parsedBody.data);
-                    } else {
-                        // console.log('Info: no WienerLinen Incident data');
-                    }
-                } else {
-                    console.log(`Error getting WienerLinen Incident data ${response.statusCode}`);
-                }
-            });
+            this.getAdditionalData(options, 'Incident');
         }
+    },
+
+    getAdditionalData(options, type) {
+        request(options, (error, response, body) => {
+            if (response.statusCode === 200) {
+                const parsedBody = JSON.parse(body);
+                if (Object.prototype.hasOwnProperty.call(parsedBody.data, 'trafficInfos')) {
+                    this[`handle${type}Data`](parsedBody.data.trafficInfos);
+                } else {
+                    console.log(`Info: no WienerLinen ${type} data available.`);
+                }
+            } else {
+                console.log(`Error getting WienerLinen ${type} data ${response.statusCode}`);
+            }
+        });
     },
 
     handleElevatorData(data) {
         const elevators = [];
-        for (let i = 0; i < data.trafficInfos.length; i += 1) {
-            elevators.push(`${data.trafficInfos[i].title}: ${data.trafficInfos[i].description}`);
+        for (let i = 0; i < data.length; i += 1) {
+            elevators.push(`${data[i].title}: ${data[i].description}`);
         }
         elevators.sort();
 
@@ -99,9 +93,9 @@ module.exports = NodeHelper.create({
 
     handleIncidentData(data) {
         const incidents = [];
-        for (let i = 0; i < data.trafficInfos.length; i += 1) {
-            const lines = data.trafficInfos[i].relatedLines.join(', ');
-            const description = data.trafficInfos[i].description;
+        for (let i = 0; i < data.length; i += 1) {
+            const lines = data[i].relatedLines.join(', ');
+            const description = data[i].description;
             incidents.push({ lines, description });
         }
         incidents.sort((a, b) => {
@@ -109,8 +103,7 @@ module.exports = NodeHelper.create({
             const nameB = b.lines.toUpperCase();
             if (nameA < nameB) {
                 return -1;
-            }
-            if (nameA > nameB) {
+            } else if (nameA > nameB) {
                 return 1;
             }
             return 0;

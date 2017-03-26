@@ -1,3 +1,5 @@
 {
-  "LOADING": "Lade..."
+  "LOADING": "Lade...",
+  "INCIDENTS": "Störungen",
+  "NO_INCIDENTS": "Keine Störungen bekannt."
 }
