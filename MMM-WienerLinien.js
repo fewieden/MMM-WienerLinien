@@ -186,6 +186,11 @@ Module.register('MMM-WienerLinien', {
         const line = document.createElement('td');
         line.classList.add('centered');
         line.innerHTML = data.line;
+        if(data.barrierFree) {
+		const icon = document.createElement('i');
+		icon.classList.add('fa','fa-wheelchair');
+		line.append(icon);
+	}
         row.appendChild(line);
 
         const towards = document.createElement('td');
