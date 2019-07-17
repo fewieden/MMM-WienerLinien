@@ -48,7 +48,7 @@ Module.register('MMM-WienerLinien', {
         Log.info(`Starting module: ${this.name}`);
         moment.locale(config.language);
         this.maxIndex = this.config.stations.length;
-        setInterval(() => {
+        setInterval(function() {
             this.updateDom(300);
             this.index += 1;
             if (this.index >= this.maxIndex) {
@@ -102,7 +102,7 @@ Module.register('MMM-WienerLinien', {
 
             table.appendChild(this.createLabelRow());
 
-            for (let i = 0; i < Math.min(this.stations[keys[this.index]].departures.length, this.config.max); i += 1) {
+            for (var i = 0; i < Math.min(this.stations[keys[this.index]].departures.length, this.config.max); i += 1) {
                 this.appendDataRow(this.stations[keys[this.index]].departures[i], table);
             }
 
@@ -206,7 +206,7 @@ Module.register('MMM-WienerLinien', {
     },
 
     appendIncidentData(appendTo, type) {
-        for (let i = 0; i < this[type].length; i += 1) {
+        for (var i = 0; i < this[type].length; i += 1) {
             const row = document.createElement('tr');
 
             const typeColumn = document.createElement('td');
@@ -234,7 +234,8 @@ Module.register('MMM-WienerLinien', {
     },
 
     shortenText(text, option) {
-        let temp = text;
+        var temp = text;
+
         if (option && temp.length > option) {
             temp = `${temp.slice(0, option)}&#8230;`;
         }
