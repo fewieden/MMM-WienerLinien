@@ -156,22 +156,26 @@ Module.register('MMM-WienerLinien', {
                     towards.innerHTML = this.shortenText(data.towards, this.config.shortenDestination);
                     row.appendChild(towards);
 
-                    for (var t = 0; t < Math.min(this.config.max, data.times.length); t += 1) {
+                    var shown = 0;
+                    for (var t = 0; t < data.times.length && shown < this.config.max; t += 1) {
                         const dt = data.times[t];
                         const time = document.createElement('td');
                         time.classList.add('align-right');
                         const delta = moment(dt.time) - moment();
                         // Time in minutes
-                        const deltaString = delta <= 0 ? '-' : Math.round(delta / 1000 / 60);
+                        const deltaString = Math.round(delta / 1000 / 60);
 
-                        if (delta > 0 && dt.barrierFree) {
-                            const u = document.createElement('u');
-                            u.innerHTML = deltaString;
-                            time.appendChild(u);
-                        } else {
-                            time.innerHTML = deltaString;
-                        }
+                        if(delta > 0) {
+                            if (dt.barrierFree) {
+                                const u = document.createElement('u');
+                                u.innerHTML = deltaString;
+                                time.appendChild(u);
+                            } else {
+                                time.innerHTML = deltaString;
+                            }
                         row.appendChild(time);
+                        shown += 1;
+                        }
                     }
                     table.appendChild(row);
                 }
