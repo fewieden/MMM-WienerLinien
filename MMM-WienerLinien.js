@@ -159,7 +159,7 @@ Module.register('MMM-WienerLinien', {
                         const dt = data.times[t];
                         const time = document.createElement('td');
                         time.classList.add('align-right');
-                        const delta = new Date(dt.time) - Date.now();
+                        const delta = moment(dt.time) - moment();
                         // Time in minutes
                         const deltaString = delta <= 0 ? '-' : Math.round(delta / 1000 / 60);
 
