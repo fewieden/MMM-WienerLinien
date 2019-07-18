@@ -1,3 +1,8 @@
+/* eslint-disable block-scoped-var */
+/* eslint-disable func-names */
+/* eslint-disable prefer-arrow-callback */
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
 /* Magic Mirror
  * Module: MMM-WienerLinien
  *
@@ -99,79 +104,78 @@ Module.register('MMM-WienerLinien', {
             station.innerHTML = this.shortenText(this.stations[keys[this.index]].name, this.config.shortenStation);
             wrapper.appendChild(station);
 
-            if (this.config.display==="matrix") {
+            if (this.config.display === 'matrix') {
                 const table = document.createElement('table');
                 table.classList.add('small', 'table', 'align-left');
 
                 table.appendChild(this.createLabelRow());
-		
-		// Parse data into destinations and time
-                // Rough structure: {deststring: {type, line,destination, [times]}}
-		var dataTable = {}; 
-		this.stations[keys[this.index]].departures.forEach(function (departure) {
-		  var destString = departure.line + " " + departure.towards;
-		  const dt = {
-		     time: departure.time,
-		     barrierFree: departure.barrierFree,
-		  };
 
-		  if (dataTable[destString] === undefined) {
-		      var dest = {
-		          type: departure.type,
-		          line: departure.line,
-		          towards: departure.towards,
-			  times: [dt]
-		      };
-                      dataTable[destString] = dest;
-		  } else {
-		      dataTable[destString].times.push(dt);
-		  }
-		});
+                // Parse data into destinations and time
+                // Rough structure: {destString: {type, line,destination, [times]}}
+                var dataTable = {};
+                this.stations[keys[this.index]].departures.forEach(function (departure) {
+                    var destString = `${departure.line} ${departure.towards}`;
+                    const dt = {
+                        time: departure.time,
+                        barrierFree: departure.barrierFree,
+                    };
 
-		const dataKeys = Object.keys(dataTable).sort();
-		for(var i = 0; i < dataKeys.length; i++) {
-		    var destString = dataKeys[i];
-		    var data = dataTable[destString];
+                    if (dataTable[destString] === undefined) {
+                        var dest = {
+                            type: departure.type,
+                            line: departure.line,
+                            towards: departure.towards,
+                            times: [dt]
+                        };
+                        dataTable[destString] = dest;
+                    } else {
+                        dataTable[destString].times.push(dt);
+                    }
+                });
+
+                const dataKeys = Object.keys(dataTable).sort();
+                for (var j = 0; j < dataKeys.length; j += 1) {
+                    var destString = dataKeys[j];
+                    var data = dataTable[destString];
 
                     const row = document.createElement('tr');
 
-		    const type = document.createElement('td');
-		    type.classList.add('centered');
-		    const typeIcon = document.createElement('i');
-		    typeIcon.classList.add('fa', Object.prototype.hasOwnProperty.call(this.types, data.type) ? this.types[data.type] : 'fa-question');
-		    type.appendChild(typeIcon);
-		    row.appendChild(type);
+                    const type = document.createElement('td');
+                    type.classList.add('centered');
+                    const typeIcon = document.createElement('i');
+                    typeIcon.classList.add('fa', Object.prototype.hasOwnProperty.call(this.types, data.type) ? this.types[data.type] : 'fa-question');
+                    type.appendChild(typeIcon);
+                    row.appendChild(type);
 
                     const line = document.createElement('td');
-		    line.classList.add('centered');
+                    line.classList.add('centered');
                     line.innerHTML = data.line;
-		    row.appendChild(line);
+                    row.appendChild(line);
 
-		    const towards = document.createElement('td');
-		    towards.innerHTML = this.shortenText(data.towards, this.config.shortenDestination);
+                    const towards = document.createElement('td');
+                    towards.innerHTML = this.shortenText(data.towards, this.config.shortenDestination);
                     row.appendChild(towards);
 
-                    for(var t = 0; t < Math.min(this.config.max, data.times.length); t++) {
-		        const dt = data.times[t];
-		        const time = document.createElement('td');
-		        time.classList.add('align-right');
-			const delta = new Date(dt.time) - Date.now();
-			// Time in minutes
-			const deltaString = delta <= 0 ? '-' : Math.round(delta/1000/60);
+                    for (var t = 0; t < Math.min(this.config.max, data.times.length); t += 1) {
+                        const dt = data.times[t];
+                        const time = document.createElement('td');
+                        time.classList.add('align-right');
+                        const delta = new Date(dt.time) - Date.now();
+                        // Time in minutes
+                        const deltaString = delta <= 0 ? '-' : Math.round(delta / 1000 / 60);
 
-			if(delta > 0 && dt.barrierFree) {
-			    const u = document.createElement('u');
-			    u.innerHTML = deltaString
-			    time.appendChild(u);
-			} else {
-			    time.innerHTML = deltaString;
-			}
-			row.appendChild(time);
+                        if (delta > 0 && dt.barrierFree) {
+                            const u = document.createElement('u');
+                            u.innerHTML = deltaString;
+                            time.appendChild(u);
+                        } else {
+                            time.innerHTML = deltaString;
+                        }
+                        row.appendChild(time);
                     }
                     table.appendChild(row);
-		}
-		wrapper.appendChild(table);
-
+                }
+                wrapper.appendChild(table);
             } else {
                 const table = document.createElement('table');
                 table.classList.add('small', 'table', 'align-left');
@@ -263,11 +267,11 @@ Module.register('MMM-WienerLinien', {
         const line = document.createElement('td');
         line.classList.add('centered');
         line.innerHTML = data.line;
-        if(data.barrierFree) {
-		const icon = document.createElement('i');
-		icon.classList.add('fa','fa-wheelchair');
-		line.append(icon);
-	}
+        if (data.barrierFree) {
+            const icon = document.createElement('i');
+            icon.classList.add('fa', 'fa-wheelchair');
+            line.append(icon);
+        }
         row.appendChild(line);
 
         const towards = document.createElement('td');

@@ -132,19 +132,19 @@ module.exports = NodeHelper.create({
 
                     const departureTime = data[i].lines[n].departures.departure[x].departureTime;
 
-		    //Standard barrier free value
-		    let barrierFree = data[i].lines[n].barrierFree
-		    if(data[i].lines[n].departures.departure[x].vehicle) {
-			//barrier free value per vehicle
-			barrierFree = data[i].lines[n].departures.departure[x].vehicle.barrierFree
+                    // Standard barrier free value
+                    let barrierFree = data[i].lines[n].barrierFree;
+                    if (data[i].lines[n].departures.departure[x].vehicle) {
+                        // Barrier free value per vehicle
+                        barrierFree = data[i].lines[n].departures.departure[x].vehicle.barrierFree;
                     }
 
-		    stations[data[i].locationStop.properties.name].departures.push({
+                    stations[data[i].locationStop.properties.name].departures.push({
                         time: departureTime[Object.prototype.hasOwnProperty.call(departureTime, 'timeReal') ? 'timeReal' : 'timePlanned'],
                         towards: data[i].lines[n].towards,
                         line: data[i].lines[n].name,
                         type: data[i].lines[n].type,
-                    	barrierFree,
+                        barrierFree,
                     });
                 }
                 if (metroFlag) {
