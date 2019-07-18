@@ -48,13 +48,14 @@ Module.register('MMM-WienerLinien', {
         Log.info(`Starting module: ${this.name}`);
         moment.locale(config.language);
         this.maxIndex = this.config.stations.length;
-        setInterval(function() {
-            this.updateDom(300);
-            this.index += 1;
-            if (this.index >= this.maxIndex) {
-                this.index = 0;
+        var self = this;
+        setInterval(function () {
+            self.updateDom(300);
+            self.index += 1;
+            if (self.index >= self.maxIndex) {
+                self.index = 0;
             }
-        }, this.config.rotateInterval);
+        }, self.config.rotateInterval);
         this.sendSocketNotification('CONFIG', this.config);
     },
 
