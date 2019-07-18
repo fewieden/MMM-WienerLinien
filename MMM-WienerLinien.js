@@ -165,7 +165,7 @@ Module.register('MMM-WienerLinien', {
                         // Time in minutes
                         const deltaString = Math.round(delta / 1000 / 60);
 
-                        if(delta > 0) {
+                        if (delta > 0) {
                             if (dt.barrierFree) {
                                 const u = document.createElement('u');
                                 u.innerHTML = deltaString;
@@ -173,16 +173,16 @@ Module.register('MMM-WienerLinien', {
                             } else {
                                 time.innerHTML = deltaString;
                             }
-                        row.appendChild(time);
-                        shown += 1;
+                            row.appendChild(time);
+                            shown += 1;
                         }
                     }
                     table.appendChild(row);
                 }
                 wrapper.appendChild(table);
 
-                if(shown === 0) {
-                    // Client ran out of data - trigger new data request from server 
+                if (shown === 0) {
+                    // Client ran out of data - trigger new data request from server
                     // Note: this only captures the case the last data row being out of data - should though be ok
                     this.sendSocketNotification('CONFIG', this.config);
                 }
