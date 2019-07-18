@@ -1,3 +1,8 @@
+/* eslint-disable block-scoped-var */
+/* eslint-disable func-names */
+/* eslint-disable prefer-arrow-callback */
+/* eslint-disable no-var */
+/* eslint-disable vars-on-top */
 /* Magic Mirror
  * Module: MMM-WienerLinien
  *
@@ -48,13 +53,14 @@ Module.register('MMM-WienerLinien', {
         Log.info(`Starting module: ${this.name}`);
         moment.locale(config.language);
         this.maxIndex = this.config.stations.length;
-        setInterval(() => {
-            this.updateDom(300);
-            this.index += 1;
-            if (this.index >= this.maxIndex) {
-                this.index = 0;
+        var self = this;
+        setInterval(function () {
+            self.updateDom(300);
+            self.index += 1;
+            if (self.index >= self.maxIndex) {
+                self.index = 0;
             }
-        }, this.config.rotateInterval);
+        }, self.config.rotateInterval);
         this.sendSocketNotification('CONFIG', this.config);
     },
 
@@ -97,16 +103,101 @@ Module.register('MMM-WienerLinien', {
             station.classList.add('align-left');
             station.innerHTML = this.shortenText(this.stations[keys[this.index]].name, this.config.shortenStation);
             wrapper.appendChild(station);
-            const table = document.createElement('table');
-            table.classList.add('small', 'table', 'align-left');
 
-            table.appendChild(this.createLabelRow());
+            if (this.config.display === 'matrix') {
+                const table = document.createElement('table');
+                table.classList.add('small', 'table', 'align-left');
 
-            for (let i = 0; i < Math.min(this.stations[keys[this.index]].departures.length, this.config.max); i += 1) {
-                this.appendDataRow(this.stations[keys[this.index]].departures[i], table);
+                table.appendChild(this.createLabelRow());
+
+                // Parse data into destinations and time
+                // Rough structure: {destString: {type, line,destination, [times]}}
+                var dataTable = {};
+                this.stations[keys[this.index]].departures.forEach(function (departure) {
+                    var destString = `${departure.line} ${departure.towards}`;
+                    const dt = {
+                        time: departure.time,
+                        barrierFree: departure.barrierFree,
+                    };
+
+                    if (dataTable[destString] === undefined) {
+                        var dest = {
+                            type: departure.type,
+                            line: departure.line,
+                            towards: departure.towards,
+                            times: [dt]
+                        };
+                        dataTable[destString] = dest;
+                    } else {
+                        dataTable[destString].times.push(dt);
+                    }
+                });
+
+                const dataKeys = Object.keys(dataTable).sort();
+                for (var j = 0; j < dataKeys.length; j += 1) {
+                    var destString = dataKeys[j];
+                    var data = dataTable[destString];
+
+                    const row = document.createElement('tr');
+
+                    const type = document.createElement('td');
+                    type.classList.add('centered');
+                    const typeIcon = document.createElement('i');
+                    typeIcon.classList.add('fa', Object.prototype.hasOwnProperty.call(this.types, data.type) ? this.types[data.type] : 'fa-question');
+                    type.appendChild(typeIcon);
+                    row.appendChild(type);
+
+                    const line = document.createElement('td');
+                    line.classList.add('centered');
+                    line.innerHTML = data.line;
+                    row.appendChild(line);
+
+                    const towards = document.createElement('td');
+                    towards.innerHTML = this.shortenText(data.towards, this.config.shortenDestination);
+                    row.appendChild(towards);
+
+                    var shown = 0;
+                    for (var t = 0; t < data.times.length && shown < this.config.max; t += 1) {
+                        const dt = data.times[t];
+                        const time = document.createElement('td');
+                        time.classList.add('align-right');
+                        const delta = moment(dt.time) - moment();
+                        // Time in minutes
+                        const deltaString = Math.round(delta / 1000 / 60);
+
+                        if (delta > 0) {
+                            if (dt.barrierFree) {
+                                const u = document.createElement('u');
+                                u.innerHTML = deltaString;
+                                time.appendChild(u);
+                            } else {
+                                time.innerHTML = deltaString;
+                            }
+                            row.appendChild(time);
+                            shown += 1;
+                        }
+                    }
+                    table.appendChild(row);
+                }
+                wrapper.appendChild(table);
+
+                if (shown === 0) {
+                    // Client ran out of data - trigger new data request from server
+                    // Note: this only captures the case the last data row being out of data - should though be ok
+                    this.sendSocketNotification('CONFIG', this.config);
+                }
+            } else {
+                const table = document.createElement('table');
+                table.classList.add('small', 'table', 'align-left');
+
+                table.appendChild(this.createLabelRow());
+
+                for (var i = 0; i < Math.min(this.stations[keys[this.index]].departures.length, this.config.max); i += 1) {
+                    this.appendDataRow(this.stations[keys[this.index]].departures[i], table);
+                }
+
+                wrapper.appendChild(table);
             }
-
-            wrapper.appendChild(table);
         }
 
         // Create section for line and elevator incidents
@@ -186,6 +277,11 @@ Module.register('MMM-WienerLinien', {
         const line = document.createElement('td');
         line.classList.add('centered');
         line.innerHTML = data.line;
+        if (data.barrierFree) {
+            const icon = document.createElement('i');
+            icon.classList.add('fa', 'fa-wheelchair');
+            line.append(icon);
+        }
         row.appendChild(line);
 
         const towards = document.createElement('td');
@@ -201,7 +297,7 @@ Module.register('MMM-WienerLinien', {
     },
 
     appendIncidentData(appendTo, type) {
-        for (let i = 0; i < this[type].length; i += 1) {
+        for (var i = 0; i < this[type].length; i += 1) {
             const row = document.createElement('tr');
 
             const typeColumn = document.createElement('td');
@@ -229,7 +325,8 @@ Module.register('MMM-WienerLinien', {
     },
 
     shortenText(text, option) {
-        let temp = text;
+        var temp = text;
+
         if (option && temp.length > option) {
             temp = `${temp.slice(0, option)}&#8230;`;
         }

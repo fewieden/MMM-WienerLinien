@@ -4,7 +4,11 @@ Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
 
 ## Example
 
-![](.github/example.jpg) ![](.github/example2.jpg) ![](.github/example3.PNG)
+![](.github/example.jpg) ![](.github/example2.jpg) ![](.github/example3.PNG) ![](.github/example4.png)
+
+
+Matrix view
+![](.github/example-matrix.png)
 
 ## Dependencies
 
@@ -37,7 +41,8 @@ Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
 | --- | --- | --- |
 | `api_key` | REQUIRED | Get an API key for free access to the data of www.wienerlinien.at [here](https://www.wien.gv.at/formularserver2/user/formular.aspx?pid=3b49a23de1ff43efbc45ae85faee31db&pn=B0718725a79fb40f4bb4b7e0d2d49f1d1). |
 | `stations` | REQUIRED | Insert here the station ids you want to display data from [How to find an ID?](https://till.mabe.at/rbl/). |
-| `max` | `5` | How many departures should be displayed. |
+| `display`  | `list`   | Show departures as list or as `matrix` (see screenshots). |
+| `max` | `5` | How many departures should be displayed. (In Matrix View: per line / destination) |
 | `shortenStation` | `false` | After how many characters the station name should be cut. Default: show full name. |
 | `shortenDestination` | `false` | After how many characters the destination name should be cut. Default: show full name. |
 | `rotateInterval` | `20000` (20 sec) | How fast should be switched between the stations. |
