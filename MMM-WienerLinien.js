@@ -180,6 +180,12 @@ Module.register('MMM-WienerLinien', {
                     table.appendChild(row);
                 }
                 wrapper.appendChild(table);
+
+                if(shown === 0) {
+                    // Client ran out of data - trigger new data request from server 
+                    // Note: this only captures the case the last data row being out of data - should though be ok
+                    this.sendSocketNotification('CONFIG', this.config);
+                }
             } else {
                 const table = document.createElement('table');
                 table.classList.add('small', 'table', 'align-left');
