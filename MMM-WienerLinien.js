@@ -210,7 +210,7 @@ Module.register('MMM-WienerLinien', {
                 const typeIcon = document.createElement('i');
                 typeIcon.classList.add('fa', 'fa-wheelchair');
                 typeColumn.appendChild(typeIcon);
-            } else if(this.config.incidentLines.includes(this[type][i].lines)) {
+            } else if (this.config.incidentLines.includes(this[type][i].lines)) {
                 typeColumn.innerHTML = this[type][i].lines;
             }
             row.appendChild(typeColumn);
@@ -219,7 +219,7 @@ Module.register('MMM-WienerLinien', {
             description.classList.add('align-left');
             if (type === 'elevators') {
                 description.innerHTML = this[type][i];
-            } else if(this.config.incidentLines.includes(this[type][i].lines)) {
+            } else if (this.config.incidentLines.includes(this[type][i].lines)) {
                 description.innerHTML = this[type][i].description;
             }
             row.appendChild(description);
