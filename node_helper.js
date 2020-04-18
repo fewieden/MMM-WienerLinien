@@ -44,32 +44,21 @@ module.exports = NodeHelper.create({
         if (notification === 'CONFIG') {
             this.config = payload;
             this.getData();
-            setInterval(() => {
-                this.getData();
+            setInterval(async () => {
+                await this.getData();
             }, this.config.updateInterval);
         }
     },
 
     /**
      * @function getData
-     * @description Requests station departure data.
+     * @description Wrapper for all required data set requests.
      * @async
      *
      * @returns {void}
      */
     async getData() {
-        try {
-            const response = await fetch(`${this.baseUrl}/monitor?rbl=${this.config.stations.join('&rbl=')}`);
-            const parsedBody = await response.json();
-
-            if (parsedBody.message.value === 'OK') {
-                this.handleData(parsedBody.data.monitors, parsedBody.message.serverTime);
-            } else {
-                throw new Error('No WienerLinien data');
-            }
-        } catch (e) {
-            console.log('Error getting WienerLinien station data:', e);
-        }
+        await this.getMonitoringData();
 
         if (this.config.elevatorStations.length > 0) {
             const url = `${this.baseUrl}/trafficInfoList?name=aufzugsinfo&relatedStop=${this.config.elevatorStations.join('&relatedStop=')}`;
@@ -82,6 +71,30 @@ module.exports = NodeHelper.create({
             const url = `${this.baseUrl}/trafficInfoList?name=${incidentType}&relatedLine=${this.config.incidentLines.join('&relatedLine=')}`;
 
             await this.getAdditionalData(url, 'Incident');
+        }
+    },
+
+    /**
+     * @function getMonitoringData
+     * @description Requests departures of stations from monitoring service.
+     * @async
+     *
+     * @returns {void}
+     */
+    async getMonitoringData() {
+        try {
+            const url = `${this.baseUrl}/monitor?rbl=${this.config.stations.join('&rbl=')}`;
+
+            const response = await fetch(`${this.baseUrl}/monitor?rbl=${this.config.stations.join('&rbl=')}`);
+            const parsedBody = await response.json();
+
+            if (parsedBody.message.value === 'OK') {
+                this.handleData(parsedBody.data.monitors, parsedBody.message.serverTime);
+            } else {
+                throw new Error('No WienerLinien data');
+            }
+        } catch (e) {
+            console.log('Error getting WienerLinien station data:', e);
         }
     },
 
