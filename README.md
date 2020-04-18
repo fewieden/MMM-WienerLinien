@@ -17,7 +17,7 @@ Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
 1. Clone this repo into `~/MagicMirror/modules` directory.
 1. Configure your `~/MagicMirror/config/config.js`:
 
-    ```js
+    ```
     {
         module: 'MMM-WienerLinien',
         position: 'top_right',
