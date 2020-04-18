@@ -48,13 +48,14 @@ Module.register('MMM-WienerLinien', {
         Log.info(`Starting module: ${this.name}`);
         moment.locale(config.language);
         this.maxIndex = this.config.stations.length;
-        setInterval(() => {
-            this.updateDom(300);
-            this.index += 1;
-            if (this.index >= this.maxIndex) {
-                this.index = 0;
+        var self = this;
+        setInterval(function () {
+            self.updateDom(300);
+            self.index += 1;
+            if (self.index >= self.maxIndex) {
+                self.index = 0;
             }
-        }, this.config.rotateInterval);
+        }, self.config.rotateInterval);
         this.sendSocketNotification('CONFIG', this.config);
     },
 
@@ -102,7 +103,7 @@ Module.register('MMM-WienerLinien', {
 
             table.appendChild(this.createLabelRow());
 
-            for (let i = 0; i < Math.min(this.stations[keys[this.index]].departures.length, this.config.max); i += 1) {
+            for (var i = 0; i < Math.min(this.stations[keys[this.index]].departures.length, this.config.max); i += 1) {
                 this.appendDataRow(this.stations[keys[this.index]].departures[i], table);
             }
 
@@ -186,6 +187,11 @@ Module.register('MMM-WienerLinien', {
         const line = document.createElement('td');
         line.classList.add('centered');
         line.innerHTML = data.line;
+        if(data.barrierFree) {
+		const icon = document.createElement('i');
+		icon.classList.add('fa','fa-wheelchair');
+		line.append(icon);
+	}
         row.appendChild(line);
 
         const towards = document.createElement('td');
@@ -201,7 +207,7 @@ Module.register('MMM-WienerLinien', {
     },
 
     appendIncidentData(appendTo, type) {
-        for (let i = 0; i < this[type].length; i += 1) {
+        for (var i = 0; i < this[type].length; i += 1) {
             const row = document.createElement('tr');
 
             const typeColumn = document.createElement('td');
@@ -229,7 +235,8 @@ Module.register('MMM-WienerLinien', {
     },
 
     shortenText(text, option) {
-        let temp = text;
+        var temp = text;
+
         if (option && temp.length > option) {
             temp = `${temp.slice(0, option)}&#8230;`;
         }

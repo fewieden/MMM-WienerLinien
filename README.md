@@ -4,7 +4,7 @@ Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
 
 ## Example
 
-![](.github/example.jpg) ![](.github/example2.jpg) ![](.github/example3.PNG)
+![](.github/example.jpg) ![](.github/example2.jpg) ![](.github/example3.PNG) ![](.github/example4.png)
 
 ## Dependencies
 
