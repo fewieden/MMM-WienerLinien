@@ -57,7 +57,7 @@ module.exports = NodeHelper.create({
         if (this.config.incidentLines.length > 0) {
             let type = '&name=stoerunglang';
             if (this.config.incidentShort) {
-                type += '&name=stoerungkurz';
+                type = '&name=stoerungkurz';
             }
 
             options.url = `${this.baseUrl}trafficInfoList?sender=${this.config.api_key}${type}&relatedLine=${this.config.incidentLines.join('&relatedLine=')}`;
