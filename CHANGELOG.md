@@ -1,5 +1,17 @@
 # MMM-WienerLinien Changelog
 
+## [2.0.0]
+
+### Added
+
+- Documentation
+
+### Changed
+
+- Using Nunjuck templates for rendering.
+- Switched from `request` to `node-fetch`.
+- General refactoring
+
 ## [1.1.1]
 
 ### Fixed
