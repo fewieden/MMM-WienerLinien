@@ -1,0 +1,52 @@
+<header class="align-left">
+    <i class="fa fa-bus logo"></i>
+    <span>WienerLinien</span>
+</header>
+{% if not name %}
+    <div class="dimmed light">{{ 'LOADING' | translate | safe }}</div>
+{% else %}
+    <div class="align-left">{{ name | shortenText(config.shortenStation) | safe }}</div>
+    <table class="small table align-left">
+        <tr>
+            <th class="centered"><i class="fa fa-info"/></th>
+            <th class="centered"><i class="fa fa-tag"/></th>
+            <th class="centered"><i class="fa fa-compass"/></th>
+            <th class="centered"><i class="fa fa-clock-o"/></th>
+        </tr>
+        {% for departure in departures %}
+            <tr>
+                <td class="centered"><i class="fa {{ departure.type | icon }}"/></td>
+                <td class="centered">{{ departure.line }}</td>
+                <td>{{ departure.towards | shortenText(config.shortenDestination) | safe }}</td>
+                <td class="align-left">{{ departure.time | timeUntil }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% if not config.elevatorStations | isEmpty or not config.incidentLines | isEmpty %}
+        <div>
+            {% if not elevators | isEmpty or not incidents | isEmpty %}
+                <div class="align-left small incidents">
+                    {{ 'INCIDENTS' | translate }}
+                </div>
+                <table class="align-left table xsmall">
+                    {% for elevator in elevators %}
+                        <tr>
+                            <td class="centered"><i class="fa fa-wheelchair"/></td>
+                            <td class="align-left">{{ elevator }}</td>
+                        </tr>
+                    {% endfor %}
+                    {% for incident in incidents %}
+                        <tr>
+                            <td class="centered">{{ incident.lines }}</td>
+                            <td class="align-left">{{ incident.description }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <div class="align-left small incidents">
+                    {{ 'NO_INCIDENTS' | translate }}
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endif %}
