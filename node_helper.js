@@ -95,17 +95,21 @@ module.exports = NodeHelper.create({
         const incidents = [];
         for (let i = 0; i < data.length; i += 1) {
             const lines = data[i].relatedLines.join(', ');
-            const description = data[i].description;
+            const { description } = data[i];
             incidents.push({ lines, description });
         }
         incidents.sort((a, b) => {
             const nameA = a.lines.toUpperCase();
             const nameB = b.lines.toUpperCase();
+
             if (nameA < nameB) {
                 return -1;
-            } else if (nameA > nameB) {
+            }
+
+            if (nameA > nameB) {
                 return 1;
             }
+
             return 0;
         });
 
@@ -130,7 +134,7 @@ module.exports = NodeHelper.create({
                         break;
                     }
 
-                    const departureTime = data[i].lines[n].departures.departure[x].departureTime;
+                    const { departureTime } = data[i].lines[n].departures.departure[x];
 
                     stations[data[i].locationStop.properties.name].departures.push({
                         time: departureTime[Object.prototype.hasOwnProperty.call(departureTime, 'timeReal') ? 'timeReal' : 'timePlanned'],
@@ -168,9 +172,12 @@ module.exports = NodeHelper.create({
             stations[keys[i]].departures.sort((a, b) => {
                 if (a.time < b.time) {
                     return -1;
-                } else if (a.time > b.time) {
+                }
+
+                if (a.time > b.time) {
                     return 1;
                 }
+
                 return 0;
             });
         }
