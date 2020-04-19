@@ -21,6 +21,6 @@ ratings:
   - "**.js"
   - "**.css"
   - "**.md"
-exclude_paths: [
-  "node_modules/**/*"
-]
+exclude_paths:
+  - "node_modules/**/*"
+  - "docs/**/*"

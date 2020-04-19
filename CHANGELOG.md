@@ -1,5 +1,27 @@
 # MMM-WienerLinien Changelog
 
+## [2.0.0]
+
+### Added
+
+- Documentation
+
+### Changed
+
+- Using Nunjuck templates for rendering.
+- Switched from `request` to `node-fetch`.
+- General refactoring
+
+## [1.1.1]
+
+### Fixed
+
+- Config option `incidentShort`. It was always returning long and short incidents.
+
+### Changed
+
+- Dependency updates
+
 ## [1.1.0]
 
 ### Added
