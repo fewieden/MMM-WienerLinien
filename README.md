@@ -4,7 +4,7 @@ Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
 
 ## Example
 
-![](.github/example.jpg) ![](.github/example2.jpg) ![](.github/example3.PNG)
+![Station 1](.github/example.jpg) ![Station 2](.github/example2.jpg) ![Incidents](.github/example3.PNG)
 
 ## Dependencies
 
@@ -14,21 +14,21 @@ Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
 
 ## Installation
 
-1. Clone this repo into `~/MagicMirror/modules` directory.
-1. Configure your `~/MagicMirror/config/config.js`:
+* Clone this repo into `~/MagicMirror/modules` directory.
+* Configure your `~/MagicMirror/config/config.js`:
 
-    ```
-    {
-        module: 'MMM-WienerLinien',
-        position: 'top_right',
-        config: {
-            stations: ['2545', '1668'],
-            // Place the other config options here
-        }
+```js
+{
+    module: 'MMM-WienerLinien',
+    position: 'top_right',
+    config: {
+        stations: ['2545', '1668'],
+        // Place the other config options here
     }
-    ```
+}
+```
 
-1. Run command `npm install --production` in `~/MagicMirror/modules/MMM-WienerLinien` directory.
+* Run command `npm install --production` in `~/MagicMirror/modules/MMM-WienerLinien` directory.
 
 ## Config Options
 
