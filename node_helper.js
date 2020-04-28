@@ -83,8 +83,6 @@ module.exports = NodeHelper.create({
      */
     async getMonitoringData() {
         try {
-            const url = `${this.baseUrl}/monitor?rbl=${this.config.stations.join('&rbl=')}`;
-
             const response = await fetch(`${this.baseUrl}/monitor?rbl=${this.config.stations.join('&rbl=')}`);
             const parsedBody = await response.json();
 
