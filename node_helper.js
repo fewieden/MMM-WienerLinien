@@ -221,7 +221,9 @@ module.exports = NodeHelper.create({
         const keys = Object.keys(stations);
 
         for (let i = 0; i < keys.length; i += 1) {
-            stations[keys[i]].departures.sort((a, b) => a.time - b.time);
+            stations[keys[i]].departures = stations[keys[i]].departures.sort((a, b) => {
+                return a.time < b.time ? -1 : (a.time > b.time ? 1 : 0);
+            });
         }
 
         this.sendSocketNotification('STATIONS', stations);

@@ -1,5 +1,11 @@
 # MMM-WienerLinien Changelog
 
+## [2.0.1]
+
+### Fixed
+
+- Sorting of departure times https://github.com/fewieden/MMM-WienerLinien/issues/16
+
 ## [2.0.0]
 
 ### Added
