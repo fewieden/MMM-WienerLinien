@@ -5,22 +5,22 @@ engines:
     enabled: true
     config:
       languages:
-      - javascript
+        - javascript
   eslint:
     enabled: true
-    channel: "eslint-3"
+    channel: "eslint-7"
     checks:
       import/no-unresolved:
         enabled: false
   fixme:
     enabled: true
   markdownlint:
-      enabled: true
+    enabled: true
 ratings:
   paths:
-  - "**.js"
-  - "**.css"
-  - "**.md"
+    - "**.js"
+    - "**.css"
+    - "**.md"
 exclude_paths:
   - "node_modules/**/*"
   - "docs/**/*"

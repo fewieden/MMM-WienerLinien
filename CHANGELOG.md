@@ -10,6 +10,7 @@
 
 ### Changed
 
+- Project config files
 - Github config files
 - Updated dependencies
 - Updated readme
