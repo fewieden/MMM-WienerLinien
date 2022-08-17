@@ -6,7 +6,11 @@
 
 ### Added
 
+- Github actions `build` and `changelog`
+
 ### Changed
+
+- Github config files
 
 ### Removed
 
