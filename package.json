@@ -1,21 +1,22 @@
 {
   "name": "mmm-wienerlinien",
   "version": "2.0.1",
-  "description": "Public Transport of Vienna/Austria Module for MagicMirror2",
+  "description": "Public Transport of Vienna/Austria Module for MagicMirror²",
   "scripts": {
-    "lint": "./node_modules/.bin/eslint . && ./node_modules/.bin/stylelint *.css",
-    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json ."
+    "lint": "eslint . && stylelint **/*.css",
+    "docs": "jsdoc -c jsdoc.json ."
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fewieden/MMM-WienerLinien.git"
   },
   "keywords": [
-    "MagicMirror",
+    "MagicMirror²",
     "Vienna",
     "Wien",
     "Public Transport",
-    "ÖPNV"
+    "ÖPNV",
+    "WienerLinien"
   ],
   "author": "fewieden",
   "license": "MIT",
@@ -24,13 +25,13 @@
   },
   "homepage": "https://github.com/fewieden/MMM-WienerLinien#readme",
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-recommended": "^4.0.0",
-    "jsdoc": "^3.6.4",
-    "stylelint": "^13.3.2",
-    "stylelint-config-standard": "^20.0.0"
+    "eslint": "^7.32.0",
+    "eslint-config-recommended": "^4.1.0",
+    "jsdoc": "^3.6.11",
+    "stylelint": "^14.10.0",
+    "stylelint-config-standard": "^27.0.0"
   },
   "dependencies": {
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.7"
   }
 }

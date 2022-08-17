@@ -11,6 +11,7 @@
 ### Changed
 
 - Github config files
+- Updated dependencies
 
 ### Removed
 
