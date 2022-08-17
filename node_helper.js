@@ -20,13 +20,24 @@ const fetch = require('node-fetch');
 const NodeHelper = require('node_helper');
 
 /**
+ * @external logger
+ * @see https://github.com/MichMich/MagicMirror/blob/master/js/logger.js
+ */
+const Log = require('logger');
+
+/**
  * @module node_helper
  * @description Backend for the module to query data from the API provider.
  *
  * @requires external:node-fetch
  * @requires external:node_helper
+ * @requires external:logger
  */
 module.exports = NodeHelper.create({
+    /** @member {string} requiresVersion - Specifies minimum required version of MagicMirror². */
+    requiresVersion: '2.15.0',
+
+    /** @member {string} baseUrl - Base URL of the API of the data provider. */
     baseUrl: 'https://www.wienerlinien.at/ogd_realtime',
 
     /**
@@ -92,7 +103,7 @@ module.exports = NodeHelper.create({
                 throw new Error('No WienerLinien data');
             }
         } catch (e) {
-            console.log('Error getting WienerLinien station data:', e);
+            Log.error('Error getting WienerLinien station data:', e);
         }
     },
 
@@ -117,7 +128,7 @@ module.exports = NodeHelper.create({
                 throw new Error('No WienerLinien data');
             }
         } catch (e) {
-            console.log(`Error getting WienerLinien data for type ${type}:`, e);
+            Log.error(`Error getting WienerLinien data for type ${type}:`, e);
         }
     },
 
