@@ -10,6 +10,8 @@
 
 ### Removed
 
+- Removed TravisCI integration
+
 ## [2.0.1]
 
 ### Fixed

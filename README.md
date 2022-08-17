@@ -1,4 +1,6 @@
-# MMM-WienerLinien  [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/fewieden/MMM-WienerLinien/master/LICENSE) [![Build Status](https://travis-ci.org/fewieden/MMM-WienerLinien.svg?branch=master)](https://travis-ci.org/fewieden/MMM-WienerLinien) [![Code Climate](https://codeclimate.com/github/fewieden/MMM-WienerLinien/badges/gpa.svg?style=flat)](https://codeclimate.com/github/fewieden/MMM-WienerLinien) [![Known Vulnerabilities](https://snyk.io/test/github/fewieden/mmm-wienerlinien/badge.svg)](https://snyk.io/test/github/fewieden/mmm-wienerlinien)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://raw.githubusercontent.com/fewieden/MMM-WienerLinien/master/LICENSE) [![Code Climate](https://codeclimate.com/github/fewieden/MMM-WienerLinien/badges/gpa.svg?style=flat)](https://codeclimate.com/github/fewieden/MMM-WienerLinien) [![Known Vulnerabilities](https://snyk.io/test/github/fewieden/mmm-wienerlinien/badge.svg)](https://snyk.io/test/github/fewieden/mmm-wienerlinien)
+
+# MMM-WienerLinien
 
 Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
 
