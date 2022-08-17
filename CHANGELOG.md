@@ -8,6 +8,7 @@ MagicMirror² version >= 2.15.0 required.
 
 ### Added
 
+- Added bus icon for night bus
 - Integrated MagicMirror logger on server side
 - Github actions `build` and `changelog`
 

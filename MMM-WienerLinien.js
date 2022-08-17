@@ -40,6 +40,7 @@ Module.register('MMM-WienerLinien', {
     /** @member {Object} types - Mapping of transportation types to icons. */
     types: {
         ptBusCity: 'fa-bus',
+        ptBusNight: 'fa-bus',
         ptTram: 'fa-train',
         ptTramWLB: 'fa-train',
         ptMetro: 'fa-subway'
