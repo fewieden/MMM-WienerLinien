@@ -1,5 +1,15 @@
 # MMM-WienerLinien Changelog
 
+## [Unreleased]
+
+### Fixed
+
+### Added
+
+### Changed
+
+### Removed
+
 ## [2.0.1]
 
 ### Fixed
