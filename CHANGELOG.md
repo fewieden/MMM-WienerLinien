@@ -12,6 +12,7 @@
 
 - Github config files
 - Updated dependencies
+- Updated readme
 
 ### Removed
 

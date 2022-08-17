@@ -2,7 +2,7 @@
 
 # MMM-WienerLinien
 
-Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
+Public Transport of Vienna/Austria Module for MagicMirror²
 
 ## Example
 
@@ -25,12 +25,12 @@ Public Transport of Vienna/Austria Module for MagicMirror<sup>2</sup>
     position: 'top_right',
     config: {
         stations: ['2545', '1668'],
-        // Place the other config options here
+        // all your config options, which are different than their default values
     }
 }
 ```
 
-* Run command `npm install --production` in `~/MagicMirror/modules/MMM-WienerLinien` directory.
+* Run command `npm i --production` in `~/MagicMirror/modules/MMM-WienerLinien` directory.
 
 ## Config Options
 
