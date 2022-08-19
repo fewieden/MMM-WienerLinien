@@ -12,6 +12,7 @@ Public Transport of Vienna/Austria Module for MagicMirror²
 
 * An installation of [MagicMirror<sup>2</sup>](https://github.com/MichMich/MagicMirror)
 * npm
+* [lodash](https://www.npmjs.com/package/lodash)
 * [node-fetch](https://www.npmjs.com/package/node-fetch)
 
 ## Installation

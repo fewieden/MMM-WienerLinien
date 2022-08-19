@@ -14,6 +14,12 @@
 const fetch = require('node-fetch');
 
 /**
+ * @external lodash
+ * @see https://www.npmjs.com/package/lodash
+ */
+const _ = require('lodash');
+
+/**
  * @external node_helper
  * @see https://github.com/MichMich/MagicMirror/blob/master/js/node_helper.js
  */
@@ -30,6 +36,7 @@ const Log = require('logger');
  * @description Backend for the module to query data from the API provider.
  *
  * @requires external:node-fetch
+ * @requires external:lodash
  * @requires external:node_helper
  * @requires external:logger
  */
