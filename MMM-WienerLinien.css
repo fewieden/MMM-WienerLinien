@@ -2,6 +2,11 @@
     margin-right: 5px;
 }
 
+.MMM-WienerLinien .heading {
+    font-size: 22px;
+    padding-top: 8px;
+}
+
 .MMM-WienerLinien .centered {
     text-align: center;
 }

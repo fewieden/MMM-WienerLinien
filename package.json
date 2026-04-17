@@ -4,6 +4,7 @@
   "description": "Public Transport of Vienna/Austria Module for MagicMirror²",
   "scripts": {
     "lint": "eslint . && stylelint **/*.css",
+    "lint:fix": "eslint . --fix && stylelint **/*.css --fix",
     "docs": "jsdoc -c jsdoc.json ."
   },
   "repository": {
@@ -27,7 +28,7 @@
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-recommended": "^4.1.0",
-    "jsdoc": "^3.6.11",
+    "jsdoc": "^4.0.3",
     "stylelint": "^14.10.0",
     "stylelint-config-standard": "^27.0.0"
   },

@@ -167,7 +167,7 @@ module.exports = NodeHelper.create({
             description,
             lines: _.join(relatedLines, ', ')
         }));
-        const sortedIncidents = _.sortBy(mappedElevators, 'lines');
+        const sortedIncidents = _.sortBy(mappedIncidents, 'lines');
 
         this.sendSocketNotification('INCIDENTS', sortedIncidents);
     },
@@ -190,7 +190,7 @@ module.exports = NodeHelper.create({
                 stations[stationName] = { name: _.get(entry, 'locationStop.properties.title'), departures: [] };
             }
 
-            for (const {departures, name, towards, type} of entry.lines) {
+            for (const { departures, name, towards, type } of entry.lines) {
                 let metroFlag = false;
 
                 for (const departure of departures.departure) {
@@ -201,7 +201,7 @@ module.exports = NodeHelper.create({
 
                     const departureTimeProp = _.has(departure.departureTime, 'timeReal') ? 'timeReal' : 'timePlanned';
 
-                    stations[stationName].departures.push({time: departure.departureTime[departureTimeProp], towards, line: name, type});
+                    stations[stationName].departures.push({ time: departure.departureTime[departureTimeProp], towards, line: name, type });
                 }
 
                 if (metroFlag) {
